@@ -520,7 +520,7 @@ export default function Home() {
                 Site office
               </p>
               <p className="mt-4 max-w-xl text-lg leading-8 text-stone-50 sm:text-xl">
-                N.47/1 Bhel Layout, Jayanager East Bangalore, India - 560041
+                No.47/1 Bhel Layout, Jayanager East Bangalore, India - 560041
               </p>
             </div>
           </div>
@@ -539,7 +539,7 @@ export default function Home() {
               width: `${24 - index * 1.45}px`,
               height: `${24 - index * 1.45}px`,
               opacity: `${0.42 - index * 0.024}`,
-              transform: "translate(-50%, -50%)",
+              transform: `translate(-50%, -50%) rotate(${index * 17}deg)`,
             }}
           />
         ))}

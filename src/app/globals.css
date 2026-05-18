@@ -121,10 +121,10 @@ button {
   background:
     radial-gradient(circle at 35% 35%, rgba(255, 248, 229, 0.98), rgba(255, 241, 205, 0.22) 44%, transparent 72%),
     radial-gradient(circle at 70% 65%, rgba(239, 201, 139, 0.68), transparent 64%);
-  border-radius: 999px;
   box-shadow:
     0 0 18px rgba(255, 241, 209, 0.32),
     0 0 32px rgba(229, 188, 126, 0.18);
+  clip-path: polygon(12% 4%, 78% 0, 100% 28%, 92% 78%, 62% 100%, 18% 90%, 0 54%);
   filter: blur(0.55px);
   mix-blend-mode: screen;
 }
