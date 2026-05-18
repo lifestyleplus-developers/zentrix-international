@@ -1,0 +1,142 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0f0d0b;
+  --foreground: #f3eee4;
+  --canvas: #100f0d;
+  --ink: #f4efe7;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sora);
+  --font-heading: var(--font-cormorant);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--background);
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sora), sans-serif;
+}
+
+body.is-loading {
+  overflow: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-cormorant), serif;
+}
+
+a,
+button {
+  cursor: pointer;
+}
+
+::selection {
+  background: rgba(230, 215, 186, 0.28);
+  color: #fffaf2;
+}
+
+.page-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f6f1e8;
+  will-change: transform;
+}
+
+.page-loader-exit {
+  transform: translate3d(0, -100vh, 0);
+  transition: transform 0.45s cubic-bezier(0.76, 0, 0.24, 1) 50ms;
+}
+
+.loader-copy-wrap {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+}
+
+.loader-copy {
+  margin: 0;
+  color: #17120d;
+  text-align: center;
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  line-height: 0.95;
+}
+
+.loader-curve {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% + 300px);
+  pointer-events: none;
+}
+
+.loader-curve path {
+  fill: #f6f1e8;
+}
+
+.site-shell {
+  width: 100%;
+  min-height: 100vh;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
+}
+
+.site-shell-loading {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.quarry-trail {
+  position: fixed;
+  z-index: 40;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 35% 35%, rgba(255, 248, 229, 0.98), rgba(255, 241, 205, 0.22) 44%, transparent 72%),
+    radial-gradient(circle at 70% 65%, rgba(239, 201, 139, 0.68), transparent 64%);
+  border-radius: 999px;
+  box-shadow:
+    0 0 18px rgba(255, 241, 209, 0.32),
+    0 0 32px rgba(229, 188, 126, 0.18);
+  filter: blur(0.55px);
+  mix-blend-mode: screen;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quarry-trail {
+    display: none;
+  }
+}
+
+@media (pointer: coarse) {
+  .quarry-trail {
+    display: none;
+  }
+}
