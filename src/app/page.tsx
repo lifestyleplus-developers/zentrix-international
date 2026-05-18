@@ -520,7 +520,7 @@ export default function Home() {
                 Site office
               </p>
               <p className="mt-4 max-w-xl text-lg leading-8 text-stone-50 sm:text-xl">
-                No.47/1 Bhel Layout, Jayanager East Bangalore, India - 560041
+                No.47/1 Bhel Layout, Jayanager East, Bangalore, India - 560041
               </p>
             </div>
           </div>
