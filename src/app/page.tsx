@@ -530,12 +530,20 @@ export default function Home() {
               <p className="text-[0.68rem] uppercase tracking-[0.24em] text-stone-400 sm:text-xs sm:tracking-[0.28em]">
                 Phone
               </p>
-              <a
-                href="tel:+918050609350"
-                className="mt-4 block text-[1.7rem] leading-none text-stone-50 transition hover:text-stone-200 sm:text-xl"
-              >
-                +91-8050609350
-              </a>
+              <div className="mt-4 grid gap-3">
+                <a
+                  href="tel:+918050609350"
+                  className="block text-[1.7rem] leading-none text-stone-50 transition hover:text-stone-200 sm:text-xl"
+                >
+                  +91-80506 09350
+                </a>
+                <a
+                  href="tel:+919986863678"
+                  className="block text-[1.7rem] leading-none text-stone-50 transition hover:text-stone-200 sm:text-xl"
+                >
+                  +91-99868 63678
+                </a>
+              </div>
             </div>
             <div className="rounded-[1.45rem] border border-white/10 bg-white/7 p-5 backdrop-blur-sm sm:col-span-2 sm:rounded-[1.9rem] sm:p-6">
               <p className="text-[0.68rem] uppercase tracking-[0.24em] text-stone-400 sm:text-xs sm:tracking-[0.28em]">
