@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 type TrailDot = {
@@ -224,21 +226,20 @@ export default function Home() {
 
   const stats = [
     { label: "Block extraction", value: "Prime granite" },
-    { label: "Site movement", value: "Excavators + fleets" },
+    { label: "Granite Processing", value: "Cutting + Polishing" },
     { label: "Dispatch rhythm", value: "Daily outbound loads" },
   ];
   const products = [
     {
-      title: "Raw Granite Blocks",
-      text: "Large-format extraction for architecture, monuments, and export-grade fabrication lines.",
+      title: "Rough Blocks",
+      text: "",
+      href: "/products/rough-blocks",
+      image: "/Rough-block.png",
     },
     {
-      title: "Cut-to-Size Slabs",
-      text: "Dimensioned stone selected for consistency, grain control, and clean finishing.",
-    },
-    {
-      title: "Aggregate & Fill",
-      text: "Secondary quarry output suited for infrastructure beds, grading, and site reinforcement.",
+      title: "Gangsaw Slabs",
+      href: "/products/gangsaw-slabs",
+      image: "/Crystalo product .png",
     },
   ];
 
@@ -453,21 +454,42 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="mt-8 grid gap-4 lg:mt-10 lg:grid-cols-3 lg:gap-5">
+          <div className="mt-8 grid gap-4 lg:mt-10 lg:grid-cols-2 lg:gap-5">
             {products.map((product, index) => (
               <article
                 key={product.title}
-                className="rounded-[1.5rem] border border-stone-300 bg-white p-5 shadow-[0_24px_70px_rgba(28,23,19,0.08)] sm:rounded-[2rem] sm:p-7"
+                className="overflow-hidden rounded-[1.5rem] border border-stone-300 bg-white shadow-[0_24px_70px_rgba(28,23,19,0.08)] sm:rounded-[2rem]"
               >
-                <p className="text-[0.68rem] uppercase tracking-[0.24em] text-stone-500 sm:text-xs sm:tracking-[0.3em]">
-                  0{index + 1}
-                </p>
-                <h3 className="mt-4 text-[2.15rem] leading-[1] tracking-[-0.04em] text-stone-950 sm:mt-5 sm:text-3xl">
-                  {product.title}
-                </h3>
-                <p className="mt-3 text-[0.98rem] leading-7 text-stone-600 sm:mt-4 sm:text-base">
-                  {product.text}
-                </p>
+                {product.image ? (
+                  <div className="relative aspect-[16/10] bg-stone-200">
+                    <Image
+                      src={product.image}
+                      alt={`${product.title} preview`}
+                      fill
+                      sizes="(max-width: 1023px) 100vw, 50vw"
+                      className="object-cover"
+                    />
+                  </div>
+                ) : null}
+                <div className="p-5 sm:p-7">
+                  <p className="text-[0.68rem] uppercase tracking-[0.24em] text-stone-500 sm:text-xs sm:tracking-[0.3em]">
+                    0{index + 1}
+                  </p>
+                  <h3 className="mt-4 text-[2.15rem] leading-[1] tracking-[-0.04em] text-stone-950 sm:mt-5 sm:text-3xl">
+                    {product.title}
+                  </h3>
+                  {product.text ? (
+                    <p className="mt-3 text-[0.98rem] leading-7 text-stone-600 sm:mt-4 sm:text-base">
+                      {product.text}
+                    </p>
+                  ) : null}
+                  <Link
+                    href={product.href}
+                    className="mt-5 inline-flex rounded-full border border-stone-300 px-4 py-2 text-[0.68rem] uppercase tracking-[0.22em] text-stone-900 transition hover:border-stone-900 hover:bg-stone-900 hover:text-white sm:text-xs"
+                  >
+                    Explore Category
+                  </Link>
+                </div>
               </article>
             ))}
           </div>
@@ -540,7 +562,7 @@ export default function Home() {
               height: `${24 - index * 1.45}px`,
               opacity: `${0.42 - index * 0.024}`,
               transform: `translate(-50%, -50%) rotate(${index * 17}deg)`,
-            }}
+            }} 
           />
         ))}
       </div>
