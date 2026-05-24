@@ -1,5 +1,7 @@
 "use client";
 
+import { ContactForm } from "@/components/ContactForm";
+import { contactInfo, footerLinks } from "@/lib/contact";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -28,6 +30,22 @@ const loaderGreetings = [
   "こんにちは",
   "Здравствуйте",
 ];
+const criticalCardImages = ["/Rough-block.png", "/Crystalo product .png"];
+let hasShownHomeLoaderInRuntime = false;
+
+function preloadImages(sources: string[]) {
+  return Promise.all(
+    sources.map(
+      (source) =>
+        new Promise<void>((resolve) => {
+          const image = new window.Image();
+          image.onload = () => resolve();
+          image.onerror = () => resolve();
+          image.src = source;
+        }),
+    ),
+  );
+}
 
 export default function Home() {
   const [trail, setTrail] = useState<TrailDot[]>(
@@ -36,12 +54,19 @@ export default function Home() {
   const [trailVisible, setTrailVisible] = useState(false);
   const [navScrolled, setNavScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [loaderActive, setLoaderActive] = useState(true);
+  const [loaderActive, setLoaderActive] = useState(() => !hasShownHomeLoaderInRuntime);
   const [loaderPhase, setLoaderPhase] = useState<"greetings" | "exit">("greetings");
   const [loaderIndex, setLoaderIndex] = useState(0);
+  const [criticalAssetsReady, setCriticalAssetsReady] = useState(false);
   const pointer = useRef<TrailDot>({ x: 0, y: 0 });
   const hasPointer = useRef(false);
   const loaderCurve = useRef<SVGPathElement>(null);
+
+  useEffect(() => {
+    if (!hasShownHomeLoaderInRuntime) {
+      hasShownHomeLoaderInRuntime = true;
+    }
+  }, []);
 
   useEffect(() => {
     const handleMove = (event: PointerEvent) => {
@@ -106,11 +131,54 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
+    const preloadTimeout = window.setTimeout(() => {
+      if (!cancelled) {
+        setCriticalAssetsReady(true);
+      }
+    }, 1400);
+
+    preloadImages(criticalCardImages).then(() => {
+      if (!cancelled) {
+        window.clearTimeout(preloadTimeout);
+        setCriticalAssetsReady(true);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(preloadTimeout);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!loaderActive) {
       return;
     }
 
     document.body.classList.add("is-loading");
+    let greetingDelay: number | undefined;
+    let releaseDelay: number | undefined;
+    let loaderMayExit = false;
+
+    const releaseLoader = () => {
+      setLoaderActive(false);
+
+      window.setTimeout(() => {
+        document.body.classList.remove("is-loading");
+      }, 520);
+    };
+
+    const tryExitLoader = () => {
+      if (!loaderMayExit || !criticalAssetsReady) {
+        return;
+      }
+
+      setLoaderPhase("exit");
+      releaseDelay = window.setTimeout(() => {
+        releaseLoader();
+      }, 80);
+    };
 
     const greetingInterval = window.setInterval(() => {
       setLoaderIndex((current) => {
@@ -118,8 +186,8 @@ export default function Home() {
           window.clearInterval(greetingInterval);
 
           greetingDelay = window.setTimeout(() => {
-            setLoaderPhase("exit");
-            releaseLoader();
+            loaderMayExit = true;
+            tryExitLoader();
           }, 570);
 
           return current;
@@ -129,15 +197,6 @@ export default function Home() {
       });
     }, 150);
 
-    let greetingDelay: number | undefined;
-    const releaseLoader = () => {
-      setLoaderActive(false);
-
-      window.setTimeout(() => {
-        document.body.classList.remove("is-loading");
-      }, 520);
-    };
-
     return () => {
       window.clearInterval(greetingInterval);
 
@@ -145,8 +204,12 @@ export default function Home() {
         window.clearTimeout(greetingDelay);
       }
 
+      if (releaseDelay) {
+        window.clearTimeout(releaseDelay);
+      }
+
     };
-  }, [loaderActive]);
+  }, [loaderActive, criticalAssetsReady]);
 
   useEffect(() => {
     if (!loaderActive || loaderPhase !== "exit") {
@@ -514,48 +577,61 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="rounded-[1.45rem] border border-white/10 bg-white/7 p-5 backdrop-blur-sm sm:rounded-[1.9rem] sm:p-6">
-              <p className="text-[0.68rem] uppercase tracking-[0.24em] text-stone-400 sm:text-xs sm:tracking-[0.28em]">
-                Email
-              </p>
-              <a
-                href="mailto:internationalzentrix@gmail.com"
-                className="mt-4 block max-w-full overflow-hidden text-base leading-7 text-stone-50 break-all transition hover:text-stone-200 sm:text-xl sm:leading-8 sm:break-words"
-              >
-                internationalzentrix@gmail.com
-              </a>
-            </div>
-            <div className="rounded-[1.45rem] border border-white/10 bg-white/7 p-5 backdrop-blur-sm sm:rounded-[1.9rem] sm:p-6">
-              <p className="text-[0.68rem] uppercase tracking-[0.24em] text-stone-400 sm:text-xs sm:tracking-[0.28em]">
-                Phone
-              </p>
-              <div className="mt-4 grid gap-3">
-                <a
-                  href="tel:+918050609350"
-                  className="block text-[1.7rem] leading-none text-stone-50 transition hover:text-stone-200 sm:text-xl"
-                >
-                  +91-80506 09350
-                </a>
-                <a
-                  href="tel:+919986863678"
-                  className="block text-[1.7rem] leading-none text-stone-50 transition hover:text-stone-200 sm:text-xl"
-                >
-                  +91-99868 63678
-                </a>
-              </div>
-            </div>
-            <div className="rounded-[1.45rem] border border-white/10 bg-white/7 p-5 backdrop-blur-sm sm:col-span-2 sm:rounded-[1.9rem] sm:p-6">
-              <p className="text-[0.68rem] uppercase tracking-[0.24em] text-stone-400 sm:text-xs sm:tracking-[0.28em]">
-                Site office
-              </p>
-              <p className="mt-4 max-w-xl text-lg leading-8 text-stone-50 sm:text-xl">
-                No.47/1 Bhel Layout, Jayanager East, Bangalore, India - 560041
-              </p>
-            </div>
+          <div>
+            <ContactForm />
           </div>
         </div>
         </section>
+
+        <footer className="border-t border-stone-300 bg-stone-50 px-5 py-14 text-stone-900 sm:px-10 lg:px-16">
+          <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-2 xl:grid-cols-4">
+            <div>
+              <p className="text-[0.8rem] font-semibold uppercase tracking-[0.18em] text-stone-900">
+                Head Office
+              </p>
+              <p className="mt-4 max-w-sm text-[1.02rem] leading-8 text-stone-600">
+                {contactInfo.headOffice}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-[0.8rem] font-semibold uppercase tracking-[0.18em] text-stone-900">
+                Connect With Us
+              </p>
+              <div className="mt-4 grid gap-2 text-[1.02rem] leading-8 text-stone-600">
+                <a href={contactInfo.phonePrimaryHref} className="transition hover:text-stone-900">
+                  {contactInfo.phonePrimary}
+                </a>
+                <a href={contactInfo.phoneSecondaryHref} className="transition hover:text-stone-900">
+                  {contactInfo.phoneSecondary}
+                </a>
+                <a href={`mailto:${contactInfo.email}`} className="transition hover:text-stone-900">
+                  {contactInfo.email}
+                </a>
+              </div>
+            </div>
+
+
+
+            <div>
+              <p className="text-[0.8rem] font-semibold uppercase tracking-[0.18em] text-stone-900">
+                Quick Links
+              </p>
+              <div className="mt-4 grid gap-2 text-[1.02rem] leading-8 text-stone-600">
+                {footerLinks.map((item) => (
+                  <a key={item.href} href={item.href} className="transition hover:text-stone-900">
+                    {item.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="mx-auto mt-10 flex max-w-6xl flex-col gap-3 border-t border-stone-300 pt-6 text-sm text-stone-500 sm:flex-row sm:items-center sm:justify-between">
+            <p>{contactInfo.companyName}</p>
+            <p>{contactInfo.email}</p>
+          </div>
+        </footer>
       </div>
 
       <div className={`hidden md:block ${trailVisible ? "" : "opacity-0"}`}>

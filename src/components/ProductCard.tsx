@@ -9,7 +9,7 @@ type ProductCardProps = {
 export function ProductCard({ product }: ProductCardProps) {
   return (
     <article className="group overflow-hidden rounded-[1.5rem] border border-stone-300 bg-white shadow-[0_24px_70px_rgba(28,23,19,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(28,23,19,0.14)] sm:rounded-[2rem]">
-      <Link href={product.href} className="block focus:outline-none focus:ring-2 focus:ring-stone-500/40">
+      <Link href={product.href} className="flex h-full flex-col focus:outline-none focus:ring-2 focus:ring-stone-500/40">
         <div className="relative aspect-[4/3] overflow-hidden bg-stone-200">
           <Image
             src={product.coverImage.src}
@@ -24,11 +24,11 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
         </div>
 
-        <div className="p-5 sm:p-7">
-          <h3 className="text-[2rem] leading-[0.98] tracking-[-0.04em] text-stone-950 sm:text-[2.2rem]">
+        <div className="flex flex-1 flex-col p-5 sm:p-7">
+          <h3 className="min-h-[4.1rem] text-[2rem] leading-[0.98] tracking-[-0.04em] text-stone-950 sm:min-h-[4.6rem] sm:text-[2.2rem]">
             {product.name}
           </h3>
-          <div className="mt-8 flex items-center justify-between gap-4">
+          <div className="mt-auto flex items-end justify-between gap-4 pt-8">
             <span className="text-[0.68rem] uppercase tracking-[0.24em] text-stone-500 sm:text-xs sm:tracking-[0.28em]">
               {product.imageCount} {product.imageCount === 1 ? "image" : "images"}
             </span>

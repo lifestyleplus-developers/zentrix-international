@@ -34,6 +34,14 @@ export function ProductSpecs({ specs }: ProductSpecsProps) {
           </div>
         ))}
       </dl>
+
+      <div className="mt-6">
+        <p className="text-base leading-7 text-stone-900 sm:text-lg">
+          <strong>
+          Note: Custom dimensions can be provided upon order request
+          </strong>
+        </p>
+      </div>
     </section>
   );
 }
