@@ -1,6 +1,6 @@
 "use server";
 
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import { redirect } from "next/navigation";
 import { contactInfo } from "@/lib/contact";
 import type { ContactFormState } from "@/lib/contact-form-state";
@@ -8,27 +8,6 @@ import type { ContactFormState } from "@/lib/contact-form-state";
 function getFieldValue(formData: FormData, key: string) {
   const value = formData.get(key);
   return typeof value === "string" ? value.trim() : "";
-}
-
-function createTransporter() {
-  const host = process.env.SMTP_HOST;
-  const port = Number(process.env.SMTP_PORT ?? "587");
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
-
-  if (!host || !user || !pass) {
-    return null;
-  }
-
-  return nodemailer.createTransport({
-    host,
-    port,
-    secure: process.env.SMTP_SECURE === "true" || port === 465,
-    auth: {
-      user,
-      pass,
-    },
-  });
 }
 
 export async function submitContactForm(
@@ -44,21 +23,25 @@ export async function submitContactForm(
     return { message: "Please complete all fields before submitting." };
   }
 
-  const transporter = createTransporter();
-
-  if (!transporter) {
+  if (!process.env.RESEND_API_KEY) {
     return {
       message:
         "Email sending is not configured yet. Please contact us directly at internationalzentrix@gmail.com or by phone.",
     };
   }
 
-  const fromAddress = process.env.CONTACT_FORM_FROM ?? process.env.SMTP_USER ?? contactInfo.email;
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  const fromAddress =
+    process.env.CONTACT_FORM_FROM ?? "onboarding@resend.dev";
+
+  const toAddress =
+    process.env.CONTACT_FORM_TO ?? contactInfo.email;
 
   try {
-    await transporter.sendMail({
-      from: `"${contactInfo.companyName} Website" <${fromAddress}>`,
-      to: contactInfo.email,
+    await resend.emails.send({
+      from: `${contactInfo.companyName} Website <${fromAddress}>`,
+      to: toAddress,
       replyTo: email,
       subject: `New enquiry from ${name}`,
       text: [
