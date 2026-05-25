@@ -5,7 +5,7 @@ export const contactInfo = {
   phonePrimaryHref: "tel:+918050609350",
   phoneSecondary: "+91-99868 63678",
   phoneSecondaryHref: "tel:+919986863678",
-  headOffice: "No.47/1 Bhel Layout, Jayanager East, Bangalore, India - 560041",
+  headOffice: "No.47/1 2nd cross Bhel Layout, Jayanagar East, Bangalore, India - 560041",
 };
 
 export const footerLinks = [

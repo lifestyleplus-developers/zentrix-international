@@ -1,14 +1,52 @@
 "use client";
 
-import { useActionState } from "react";
-import { submitContactForm } from "@/app/actions/contact";
-import { initialContactFormState } from "@/lib/contact-form-state";
+import { useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
+import type { ContactFormResponse } from "@/lib/contact-form";
 
 export function ContactForm() {
-  const [state, formAction, pending] = useActionState(
-    submitContactForm,
-    initialContactFormState,
-  );
+  const router = useRouter();
+  const [message, setMessage] = useState("");
+  const [pending, setPending] = useState(false);
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setPending(true);
+    setMessage("");
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const payload = {
+      name: String(formData.get("name") ?? "").trim(),
+      phone: String(formData.get("phone") ?? "").trim(),
+      email: String(formData.get("email") ?? "").trim(),
+      requirement: String(formData.get("requirement") ?? "").trim(),
+    };
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = (await response.json()) as ContactFormResponse;
+
+      if (!response.ok || !result.success) {
+        setMessage(result.message ?? "We could not send your enquiry right now.");
+        return;
+      }
+
+      form.reset();
+      router.push("/contact-us/thank-you");
+    } catch {
+      setMessage("We could not send your enquiry right now.");
+    } finally {
+      setPending(false);
+    }
+  }
 
   return (
     <section className="rounded-[1.45rem] border border-white/10 bg-white/7 p-5 backdrop-blur-sm sm:rounded-[1.9rem] sm:p-6">
@@ -19,7 +57,7 @@ export function ContactForm() {
         Contact us
       </h3>
 
-      <form action={formAction} className="mt-6 grid gap-4">
+      <form onSubmit={handleSubmit} className="mt-6 grid gap-4">
         <label className="grid gap-2">
           <span className="text-[0.72rem] uppercase tracking-[0.22em] text-stone-400">
             Name
@@ -71,9 +109,9 @@ export function ContactForm() {
           />
         </label>
 
-        {state.message ? (
+        {message ? (
           <p aria-live="polite" className="text-sm leading-6 text-amber-200">
-            {state.message}
+            {message}
           </p>
         ) : null}
 
