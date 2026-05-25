@@ -21,8 +21,19 @@ function isValidPayload(body: unknown): body is ContactFormPayload {
     typeof payload.name === "string" &&
     typeof payload.phone === "string" &&
     typeof payload.email === "string" &&
+    Array.isArray(payload.productInterest) &&
+    payload.productInterest.every((item) => typeof item === "string") &&
     typeof payload.requirement === "string"
   );
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 export async function POST(request: Request) {
@@ -47,9 +58,10 @@ export async function POST(request: Request) {
   const name = body.name.trim();
   const phone = body.phone.trim();
   const email = body.email.trim();
+  const productInterest = body.productInterest.map((item) => item.trim()).filter(Boolean);
   const requirement = body.requirement.trim();
 
-  if (!name || !phone || !email || !requirement) {
+  if (!name || !phone || !email || productInterest.length === 0 || !requirement) {
     return NextResponse.json<ContactFormResponse>(
       { success: false, message: "Please complete all fields before submitting." },
       { status: 400 },
@@ -78,7 +90,46 @@ export async function POST(request: Request) {
       pass: emailPass,
     },
   });
+// After trimming productInterest, add this grouping logic
+const grouped = productInterest.reduce<Record<string, string[]>>((acc, item) => {
+  const dashIndex = item.indexOf(" - ");
+  if (dashIndex !== -1) {
+    const type = item.slice(0, dashIndex).trim();
+    const stone = item.slice(dashIndex + 3).trim();
+    (acc[type] ??= []).push(stone);
+  } else {
+    (acc[item] ??= []);
+  }
+  return acc;
+}, {});
 
+const productInterestText = Object.entries(grouped)
+  .map(([type, stones]) =>
+    stones.length > 0
+      ? `${type}\n${stones.map((s) => `  - ${s}`).join("\n")}`
+      : type
+  )
+  .join("\n\n");
+
+const productInterestHtml = Object.entries(grouped)
+  .map(
+    ([type, stones]) => `
+      <tr>
+        <td style="padding: 7px 0; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #999990; vertical-align: top; width: 120px;">
+          ${stones.length > 0 ? escapeHtml(type) : "Product interest"}
+        </td>
+        <td style="padding: 7px 0; font-size: 14px; color: #1a1a18; vertical-align: top;">
+          ${
+            stones.length > 0
+              ? `<span style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #1a1a18; display: block; margin-bottom: 4px;">${escapeHtml(type)}</span>
+                 ${stones.map((s) => `<span style="display: block; color: #44443f;">${escapeHtml(s)}</span>`).join("")}`
+              : escapeHtml(type)
+          }
+        </td>
+      </tr>
+    `
+  )
+  .join("");
   try {
     const info = await transporter.sendMail({
       from: `"${contactInfo.companyName} Website" <${emailUser}>`,
@@ -89,18 +140,47 @@ export async function POST(request: Request) {
         `Name: ${name}`,
         `Phone: ${phone}`,
         `Email: ${email}`,
-        "",
-        "Requirement Detail:",
+        ``,
+        `Product Interest:`,
+        productInterestText,
+        ``,
+        `Requirement Detail:`,
         requirement,
       ].join("\n"),
+      
       html: `
-        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #1f1b17;">
-          <h2 style="margin-bottom: 16px;">New enquiry from Zentrix International website</h2>
-          <p><strong>Name:</strong> ${name}</p>
-          <p><strong>Phone:</strong> ${phone}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Requirement Detail:</strong></p>
-          <p>${requirement.replace(/\n/g, "<br />")}</p>
+        <div style="font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; max-width: 560px; margin: 0 auto; background: #ffffff;">
+      
+          <div style="padding: 32px 40px; border-bottom: 1px solid #e8e8e4;">
+            <p style="margin: 0; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #999990;">New enquiry</p>
+            <h1 style="margin: 6px 0 0; font-size: 20px; font-weight: 600; color: #1a1a18; letter-spacing: -0.01em;">${escapeHtml(name)}</h1>
+          </div>
+      
+          <div style="padding: 28px 40px; border-bottom: 1px solid #e8e8e4;">
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="padding: 7px 0; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #999990; width: 120px;">Phone</td>
+                <td style="padding: 7px 0; font-size: 14px; color: #1a1a18;">${escapeHtml(phone)}</td>
+              </tr>
+              <tr>
+                <td style="padding: 7px 0; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #999990;">Email</td>
+                <td style="padding: 7px 0; font-size: 14px; color: #2563eb;">${escapeHtml(email)}</td>
+              </tr>
+            </table>
+          </div>
+      
+          <div style="padding: 28px 40px; border-bottom: 1px solid #e8e8e4;">
+            <p style="margin: 0 0 14px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #999990;">Product interest</p>
+            <table style="width: 100%; border-collapse: collapse;">
+              ${productInterestHtml}
+            </table>
+          </div>
+      
+          <div style="padding: 28px 40px;">
+            <p style="margin: 0 0 10px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #999990;">Requirement</p>
+            <p style="margin: 0; font-size: 14px; color: #1a1a18; line-height: 1.7; white-space: pre-wrap;">${escapeHtml(requirement)}</p>
+          </div>
+      
         </div>
       `,
     });
