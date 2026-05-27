@@ -61,7 +61,7 @@ export async function POST(request: Request) {
   const productInterest = body.productInterest.map((item) => item.trim()).filter(Boolean);
   const requirement = body.requirement.trim();
 
-  if (!name || !phone || !email || productInterest.length === 0 || !requirement) {
+  if (!name || !phone || !email || !requirement) {
     return NextResponse.json<ContactFormResponse>(
       { success: false, message: "Please complete all fields before submitting." },
       { status: 400 },
@@ -129,7 +129,16 @@ const productInterestHtml = Object.entries(grouped)
       </tr>
     `
   )
-  .join("");
+  .join("") || `
+      <tr>
+        <td style="padding: 7px 0; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #999990; vertical-align: top; width: 120px;">
+          Product interest
+        </td>
+        <td style="padding: 7px 0; font-size: 14px; color: #1a1a18; vertical-align: top;">
+          Not specified
+        </td>
+      </tr>
+    `;
   try {
     const info = await transporter.sendMail({
       from: `"${contactInfo.companyName} Website" <${emailUser}>`,
@@ -142,7 +151,7 @@ const productInterestHtml = Object.entries(grouped)
         `Email: ${email}`,
         ``,
         `Product Interest:`,
-        productInterestText,
+        productInterestText || "Not specified",
         ``,
         `Requirement Detail:`,
         requirement,

@@ -302,12 +302,6 @@ export function ContactForm() {
       requirement: String(formData.get("requirement") ?? "").trim(),
     };
 
-    if (payload.productInterest.length === 0) {
-      setPending(false);
-      setMessage("Please select at least one product.");
-      return;
-    }
-
     try {
       const response = await fetch("/api/contact", {
         method: "POST",

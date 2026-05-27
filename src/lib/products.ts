@@ -20,6 +20,7 @@ export type ProductSummary = {
   name: string;
   href: string;
   coverImage: ProductImage;
+  swatchGradient?: string;
   imageCount: number;
   intro: string;
 };

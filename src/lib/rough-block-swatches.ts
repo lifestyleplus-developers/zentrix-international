@@ -1,0 +1,17 @@
+export const roughBlockSwatches = [
+  ["Absolute Black", "linear-gradient(135deg, #1a1a1a, #0d0d0d)"],
+  ["Black Galaxy", "linear-gradient(135deg, #1c1c1c, #2a2010, #1a1a1a)"],
+  ["Black Forest", "linear-gradient(135deg, #1e1e1e, #2d2d2d, #111)"],
+  ["Alaska White", "linear-gradient(135deg, #e8e4dc, #d4cfc7, #ece8e0)"],
+  ["Viscon White", "linear-gradient(135deg, #dedad2, #c8c4b8, #e2dfd6)"],
+  ["Kuppam Green", "linear-gradient(135deg, #2d4a2d, #1e3320, #3a5e38)"],
+  ["Classic Paradiso", "linear-gradient(135deg, #4a2040, #6b3558, #3d1a35)"],
+  ["Himalayan Blue", "linear-gradient(135deg, #2a3a4a, #1e2d3d, #364858)"],
+  ["Colombo Juprana", "linear-gradient(135deg, #c8a87a, #b89060, #d4b48a)"],
+  ["Red Multi", "linear-gradient(135deg, #6b2020, #8b3535, #4a1515)"],
+  ["Black Marquina", "linear-gradient(135deg, #111, #1a1a1a, #222)"],
+  ["Ivory White", "linear-gradient(135deg, #f0ebe0, #e8e0d0, #f4efe4)"],
+  ["Meera White", "linear-gradient(135deg, #eae6dc, #dedad0, #eeebe2)"],
+  ["River White", "linear-gradient(135deg, #ddd8cc, #c8c0b0, #e4dfd4)"],
+  ["Zebra Black", "linear-gradient(135deg, #1a1a1a, #2e2e2e, #111)"],
+] as const;

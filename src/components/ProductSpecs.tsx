@@ -28,9 +28,9 @@ export function ProductSpecs({ specs }: ProductSpecsProps) {
             <dt className="text-[1.1rem] leading-[1.2] tracking-[-0.02em] text-stone-700 sm:text-[1.45rem]">
               {label}
             </dt>
-            <dd className="max-w-4xl text-base leading-8 text-stone-600 sm:text-lg">
-              {value}
-            </dd>
+            <dd className="max-w-4xl whitespace-pre-line text-base leading-8 text-stone-600 sm:text-lg">
+  {value}
+</dd>
           </div>
         ))}
       </dl>

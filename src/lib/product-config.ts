@@ -334,7 +334,10 @@ const commonOverrides: Record<string, ProductContentOverride> = {
 };
 
 const roughBlockSpecs: ProductSpecs = {
-  Dimensions: "Export-sized rough blocks cut to quarry yield and container planning.",
+  Dimensions: 
+  "Small: 120–180 × 60–90 × 60–90 cm\n" +
+  "Medium: 180–240 × 90–120 × 90–120 cm\n" +
+  "Large: 240–320 × 120–180 × 100–180 cm",
   Thickness: "Block form with sizing finalized during extraction and trimming.",
   Finishes: "Natural quarry finish with optional dressed faces on request.",
   "Edge Profiles": "Wire-sawn, quarry-cut, or dressed edges based on dispatch requirement.",

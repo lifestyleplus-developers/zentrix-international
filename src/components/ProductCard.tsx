@@ -11,13 +11,22 @@ export function ProductCard({ product }: ProductCardProps) {
     <article className="group overflow-hidden rounded-[1.5rem] border border-stone-300 bg-white shadow-[0_24px_70px_rgba(28,23,19,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(28,23,19,0.14)] sm:rounded-[2rem]">
       <Link href={product.href} className="flex h-full flex-col focus:outline-none focus:ring-2 focus:ring-stone-500/40">
         <div className="relative aspect-[4/3] overflow-hidden bg-stone-200">
-          <Image
-            src={product.coverImage.src}
-            alt={product.coverImage.alt}
-            fill
-            sizes="(max-width: 767px) 100vw, (max-width: 1199px) 50vw, 25vw"
-            className="object-cover transition duration-500 group-hover:scale-[1.04]"
-          />
+          {product.swatchGradient ? (
+            <div
+              aria-label={product.coverImage.alt}
+              className="h-full w-full transition duration-500 group-hover:scale-[1.04]"
+              role="img"
+              style={{ background: product.swatchGradient }}
+            />
+          ) : (
+            <Image
+              src={product.coverImage.src}
+              alt={product.coverImage.alt}
+              fill
+              sizes="(max-width: 767px) 100vw, (max-width: 1199px) 50vw, 25vw"
+              className="object-cover transition duration-500 group-hover:scale-[1.04]"
+            />
+          )}
           <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_45%,rgba(15,13,11,0.65)_100%)]" />
           <div className="absolute left-4 top-4 rounded-full border border-white/20 bg-[rgba(17,15,12,0.45)] px-3 py-1 text-[0.62rem] uppercase tracking-[0.24em] text-stone-100 backdrop-blur-sm sm:left-5 sm:top-5 sm:text-[0.68rem]">
             {product.categoryLabel}
