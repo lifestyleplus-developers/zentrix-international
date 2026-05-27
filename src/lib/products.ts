@@ -27,6 +27,7 @@ export type ProductSummary = {
 export type ProductDetail = ProductSummary & {
   badge: string;
   eyebrow: string;
+  metaDescription: string;
   description: string[];
   specs: ProductSpecs;
   images: ProductImage[];
@@ -44,9 +45,18 @@ function sortImages(images: string[]) {
 
 async function getProductDirectories(category: ProductCategorySlug) {
   const categoryPath = path.join(productsRoot, category);
-  const entries = await fs.readdir(categoryPath, { withFileTypes: true });
 
-  return entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name);
+  try {
+    const entries = await fs.readdir(categoryPath, { withFileTypes: true });
+
+    return entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name);
+  } catch (error) {
+    if (error instanceof Error && "code" in error && error.code === "ENOENT") {
+      return [];
+    }
+
+    throw error;
+  }
 }
 
 async function getProductImages(category: ProductCategorySlug, slug: string) {
@@ -125,6 +135,7 @@ export async function getProductDetail(
     intro: content.intro,
     badge: categoryConfig.badge,
     eyebrow: categoryConfig.eyebrow,
+    metaDescription: content.metaDescription,
     description: content.description,
     specs: content.specs,
     images,

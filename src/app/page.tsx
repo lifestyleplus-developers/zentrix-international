@@ -12,11 +12,6 @@ type TrailDot = {
 };
 
 const TRAIL_SIZE = 12;
-const navItems = [
-  { href: "#about-us", label: "About Us" },
-  { href: "#products", label: "Products" },
-  { href: "#contact-us", label: "Contact Us" },
-];
 const loaderGreetings = [
   "Hello",
   "नमस्ते",
@@ -52,8 +47,6 @@ export default function Home() {
     Array.from({ length: TRAIL_SIZE }, () => ({ x: 0, y: 0 })),
   );
   const [trailVisible, setTrailVisible] = useState(false);
-  const [navScrolled, setNavScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [loaderActive, setLoaderActive] = useState(() => !hasShownHomeLoaderInRuntime);
   const [loaderPhase, setLoaderPhase] = useState<"greetings" | "exit">("greetings");
   const [loaderIndex, setLoaderIndex] = useState(0);
@@ -102,31 +95,6 @@ export default function Home() {
     return () => {
       window.removeEventListener("pointermove", handleMove);
       window.cancelAnimationFrame(frame);
-    };
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setNavScrolled(window.scrollY > 36);
-    };
-
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
-  useEffect(() => {
-    const closeMenu = () => {
-      setMobileMenuOpen(false);
-    };
-
-    window.addEventListener("resize", closeMenu);
-
-    return () => {
-      window.removeEventListener("resize", closeMenu);
     };
   }, []);
 
@@ -288,9 +256,9 @@ export default function Home() {
   }, [loaderActive]);
 
   const stats = [
-    { label: "Block extraction", value: "Prime granite" },
-    { label: "Granite Processing", value: "Cutting + Polishing" },
-    { label: "Dispatch rhythm", value: "Daily outbound loads" },
+    { label: "Raw blocks", value: "Consistent Grade" },
+    { label: "Cut to spec", value: "Finished to order" },
+    { label: "Reliable lead times.", value: "Daily dispatch" },
   ];
   const products = [
     {
@@ -328,84 +296,6 @@ export default function Home() {
         </div>
       ) : null}
 
-      <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-3 transition-all duration-300 sm:px-6 sm:pt-3">
-        <div
-          className={[
-            "w-full max-w-5xl border px-3 shadow-[inset_0_1px_0_rgba(255,248,235,0.1),0_22px_60px_rgba(0,0,0,0.28)] transition-all duration-300 sm:px-6",
-            navScrolled
-              ? "rounded-[1.45rem] border-stone-200/14 bg-[linear-gradient(180deg,rgba(25,21,17,0.94)_0%,rgba(18,15,12,0.98)_100%)] py-2.5"
-              : "rounded-[1.7rem] border-stone-300/12 bg-[linear-gradient(180deg,rgba(43,36,30,0.96)_0%,rgba(28,23,19,0.98)_100%)] py-3",
-          ].join(" ")}
-        >
-          <nav
-            aria-label="Primary navigation"
-            className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
-          >
-            <div className="flex items-center justify-between gap-3 sm:block">
-              <a
-                href="#top"
-                className={[
-                  "block px-2 text-[0.7rem] uppercase text-stone-100 transition-all hover:text-stone-200 focus:outline-none focus:ring-2 focus:ring-stone-200/50 sm:px-0",
-                  navScrolled ? "tracking-[0.28em]" : "tracking-[0.34em]",
-                ].join(" ")}
-              >
-                Zentrix International
-              </a>
-
-              <button
-                type="button"
-                aria-expanded={mobileMenuOpen}
-                aria-controls="mobile-nav-menu"
-                aria-label="Toggle navigation menu"
-                onClick={() => setMobileMenuOpen((current) => !current)}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/6 text-stone-100 transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-stone-200/50 sm:hidden"
-              >
-                <span className="relative block h-4 w-5">
-                  <span
-                    className={`absolute left-0 top-0 h-[1.5px] w-5 rounded-full bg-current transition-all duration-300 ${
-                      mobileMenuOpen ? "top-[7px] rotate-45" : ""
-                    }`}
-                  />
-                  <span
-                    className={`absolute left-0 top-[7px] h-[1.5px] w-5 rounded-full bg-current transition-all duration-300 ${
-                      mobileMenuOpen ? "opacity-0" : ""
-                    }`}
-                  />
-                  <span
-                    className={`absolute left-0 top-[14px] h-[1.5px] w-5 rounded-full bg-current transition-all duration-300 ${
-                      mobileMenuOpen ? "top-[7px] -rotate-45" : ""
-                    }`}
-                  />
-                </span>
-              </button>
-            </div>
-
-            <div
-              id="mobile-nav-menu"
-              className={`${
-                mobileMenuOpen ? "grid" : "hidden"
-              } grid-cols-1 gap-2 border-t border-white/8 pt-3 sm:flex sm:border-none sm:pt-0 sm:items-center sm:justify-end sm:gap-x-1 sm:gap-y-2`}
-            >
-              {navItems.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={[
-                    "flex min-h-11 items-center justify-center rounded-[0.95rem] px-3 py-2.5 text-center text-[0.68rem] uppercase tracking-[0.2em] transition-all hover:text-stone-50 focus:outline-none focus:ring-2 focus:ring-stone-200/50 sm:min-h-0 sm:rounded-full sm:px-4 sm:py-2 sm:text-xs sm:tracking-[0.24em]",
-                    navScrolled
-                      ? "bg-stone-100/8 text-stone-200 hover:bg-stone-100/12"
-                      : "bg-black/10 text-stone-300 hover:bg-stone-100/8",
-                  ].join(" ")}
-                >
-                  {item.label}
-                </a>
-              ))}
-            </div>
-          </nav>
-        </div>
-      </header>
-
       <div className={`site-shell ${loaderActive ? "site-shell-loading" : ""}`}>
         <section className="relative min-h-dvh overflow-hidden">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(245,242,235,0.18),transparent_38%),linear-gradient(180deg,rgba(17,16,13,0.1),rgba(17,16,13,0.7))]" />
@@ -426,11 +316,11 @@ export default function Home() {
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_20rem] lg:items-end">
             <div className="max-w-4xl">
               <p className="mb-4 text-[0.68rem] uppercase tracking-[0.28em] text-stone-200/72 sm:text-sm sm:tracking-[0.32em]">
-                Cut from earth. Moved with precision.
+              Cut from earth. Moved with precision.
               </p>
-              <h1 className="max-w-[8ch] text-[clamp(2.9rem,15vw,7.8rem)] leading-[0.9] tracking-[-0.05em] text-stone-50 sm:max-w-4xl sm:text-[clamp(3.2rem,9vw,7.8rem)]">
-                Granite carved at quarry scale.
-              </h1>
+              <h1 className="text-[clamp(2.9rem,15vw,7.8rem)] leading-[0.9] tracking-[-0.05em] text-stone-50 sm:max-w-4xl sm:text-[clamp(3.2rem,9vw,7.8rem)]">
+  Stone sourced,<br />graded, &<br />dispatched at volume.
+</h1>
             </div>
           </div>
 
@@ -459,37 +349,32 @@ export default function Home() {
         <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div>
             <p className="text-[0.68rem] uppercase tracking-[0.28em] text-stone-400 sm:text-xs sm:tracking-[0.34em]">
-              About Us
+              About
             </p>
-            <h2 className="mt-4 max-w-[10ch] text-[2.8rem] leading-[0.95] tracking-[-0.05em] text-stone-50 sm:max-w-md sm:text-6xl">
-              A quarry team built around discipline and stone quality.
-            </h2>
+            <h2 className="mt-4 max-w-[22ch] text-[2.8rem] leading-[0.95] tracking-[-0.05em] text-stone-50 sm:max-w-md sm:text-6xl">
+  We work in stone.<br />We ship on schedule.
+</h2>
           </div>
 
           <div className="grid gap-6">
             <p className="max-w-2xl text-base leading-7 text-stone-300 sm:text-lg sm:leading-8">
-              Zentrix International is positioned as a granite quarry operator
-              focused on dependable extraction, efficient loading cycles, and
-              consistent material grading for downstream construction and stone
-              fabrication partners.
+            Zentrix International supplies granite direct from quarry — rough blocks and gangsaw slabs graded for construction, fabrication, and commercial fit-out buyers.
             </p>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="rounded-[1.45rem] border border-white/10 bg-white/6 p-5 sm:rounded-[1.75rem] sm:p-6">
                 <p className="text-[0.68rem] uppercase tracking-[0.24em] text-stone-400 sm:text-xs sm:tracking-[0.28em]">
-                  Operating principle
+                How we work
                 </p>
                 <p className="mt-3 text-[0.98rem] leading-7 text-stone-200">
-                  Controlled extraction, measured haulage, and accountable site
-                  movement from cut face to dispatch.
+                Controlled extraction from face to dispatch. Every load is graded, measured, and documented before it leaves the yard.
                 </p>
               </div>
               <div className="rounded-[1.45rem] border border-white/10 bg-white/6 p-5 sm:rounded-[1.75rem] sm:p-6">
                 <p className="text-[0.68rem] uppercase tracking-[0.24em] text-stone-400 sm:text-xs sm:tracking-[0.28em]">
-                  Material focus
+                What we supply
                 </p>
                 <p className="mt-3 text-[0.98rem] leading-7 text-stone-200">
-                  Granite blocks, cut stock, and quarry by-products prepared for
-                  commercial-scale supply chains.
+                Rough blocks, gangsaw slabs, and quarry by-products — prepared for commercial-scale procurement.
                 </p>
               </div>
             </div>
@@ -507,13 +392,12 @@ export default function Home() {
               <p className="text-[0.68rem] uppercase tracking-[0.28em] text-stone-500 sm:text-xs sm:tracking-[0.34em]">
                 Products
               </p>
-              <h2 className="mt-4 max-w-[10ch] text-[2.8rem] leading-[0.95] tracking-[-0.05em] sm:max-w-2xl sm:text-6xl">
-                Quarry output designed for heavy use and clean finishing.
-              </h2>
+              <h2 className="mt-4 max-w-[22ch] text-[2.8rem] leading-[0.95] tracking-[-0.05em] sm:max-w-2xl sm:text-6xl">
+  Granite for builders,<br />fabricators, &<br />specification teams.
+</h2>
             </div>
             <p className="max-w-xl text-[0.98rem] leading-7 text-stone-600 sm:text-base">
-              Product categories are structured for buyers who need raw volume,
-              dimensional consistency, or secondary material for civil work.
+            Whether you need raw volume, dimensioned slabs, or secondary material for civil work — we supply across all three categories.
             </p>
           </div>
 
@@ -550,7 +434,7 @@ export default function Home() {
                     href={product.href}
                     className="mt-5 inline-flex rounded-full border border-stone-300 px-4 py-2 text-[0.68rem] uppercase tracking-[0.22em] text-stone-900 transition hover:border-stone-900 hover:bg-stone-900 hover:text-white sm:text-xs"
                   >
-                    Explore Category
+                    View Inventory
                   </Link>
                 </div>
               </article>
@@ -568,12 +452,11 @@ export default function Home() {
             <p className="text-[0.68rem] uppercase tracking-[0.28em] text-stone-400 sm:text-xs sm:tracking-[0.34em]">
               Contact Us
             </p>
-            <h2 className="mt-4 max-w-[9ch] text-[2.8rem] leading-[0.95] tracking-[-0.05em] text-stone-50 sm:max-w-md sm:text-6xl">
-              Start a supply conversation with the quarry team.
-            </h2>
+            <h2 className="mt-4 text-[2.8rem] leading-[0.95] tracking-[-0.05em] text-stone-50 sm:max-w-md sm:text-6xl">
+  Ready to source?<br />Talk to us.
+</h2>
             <p className="mt-5 max-w-xl text-base leading-7 text-stone-300 sm:mt-6 sm:text-lg sm:leading-8">
-              Use this section as the first contact block for procurement,
-              material inquiries, and dispatch planning.
+            For procurement inquiries, sample requests, and dispatch planning.
             </p>
           </div>
 

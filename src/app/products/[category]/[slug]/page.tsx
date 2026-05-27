@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
   return {
     title: `${product.name} | ${product.categoryLabel} | Zentrix International`,
-    description: product.intro,
+    description: product.metaDescription,
   };
 }
 
